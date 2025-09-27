@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Abdirizaak Databases — Shop</title>
+  <style>
+    :root{
+      --red:#e63946;--blue:#1d4ed8;--green:#16a34a;--bg:#0f172a;--card:#0b1220;--muted:#aab3c6;
+      --glass: rgba(255,255,255,0.04);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;color:#e6eef8;background:linear-gradient(180deg, rgba(13,32,74,1) 0%, rgba(7,16,26,1) 100%);}
+    a{text-decoration:none;color:inherit}
+
+    .container{max-width:1200px;margin:30px auto;padding:20px}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:60px;height:60px;border-radius:12px;background:linear-gradient(135deg,var(--red),var(--blue));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px;box-shadow:0 6px 18px rgba(3,7,18,0.6);}
+    .title{font-size:30px;font-weight:700}
+    nav{display:flex;gap:12px}
+    .navlink{padding:8px 12px;border-radius:10px;color:var(--muted);cursor:pointer;transition:all .18s}
+    .navlink:hover{background:var(--glass);color:#fff}
+
+    #welcomeScreen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:30px;background: url("1.jpg") center/cover no-repeat; z-index:60;}
+    #welcomeScreen::before{content:"";position:absolute;inset:0;background:rgba(2,6,23,0.75);backdrop-filter:blur(3px); z-index:-1;}
+    .welcomeCard{position:relative;width:min(980px,95%);background:linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));border-radius:14px;padding:28px;display:grid;grid-template-columns:1fr 380px;gap:20px;align-items:center;box-shadow:0 12px 40px rgba(2,6,23,0.8);color:#fff;}
+
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+    input[type=text],input[type=password]{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#fff}
+    .btn{display:inline-block;padding:10px 14px;border-radius:10px;background:var(--blue);color:#fff;border:none;cursor:pointer;font-weight:600}
+    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06)}
+
+    #app{display:none}
+    .grid{display:grid;grid-template-columns:300px 1fr;gap:18px}
+    .sidebar{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:16px;border-radius:12px;height:calc(100vh - 160px);overflow:auto}
+    .sidebar .user{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+    .avatar{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;color:white;font-weight:700}
+    .menu{display:flex;flex-direction:column;gap:8px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;border-radius:12px}
+
+    .contentHeader{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+    .kpi{display:flex;gap:12px}
+    .kpi .k{min-width:160px}
+    .list{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+    .fileItem{display:flex;align-items:center;justify-content:space-between;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)}
+    @keyframes pop{0%{transform:translateY(8px);opacity:0}100%{transform:none;opacity:1}}
+    .animate-pop{animation:pop .45s ease both}
+    @media (max-width:900px){.welcomeCard{grid-template-columns:1fr;}.grid{grid-template-columns:1fr}.sidebar{height:auto}}
+    .muted{color:var(--muted);font-size:13px}
+    .small{font-size:13px}
+    .pill{padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.03);} 
+  </style>
+</head>
+<body>
+  <div id="welcomeScreen" aria-hidden="false">
+    <div class="welcomeCard animate-pop">
+      <div class="welcomeLeft">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+          <div class="logo">AD</div>
+          <div>
+            <div class="title">Abdirizaak Databases</div>
+            <div class="muted">Shop of Microsoft Access database templates — Browse, download, upload, manage.</div>
+          </div>
+        </div>
+        <h1>Welcome to Abdirizaak Databases</h1>
+        <p>Premium and ready-to-use MS Access templates for shops, inventory, HR, CRM and more. Use the dashboard to preview and manage files. This demo is frontend-only — login: <strong>******</strong> or <strong>*****</strong>.</p>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn" id="loginBtn">Login</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="loginBox">
+          <h3 style="margin-top:0">Sign in</h3>
+          <div style="margin-bottom:10px">
+            <label for="user">Username</label>
+            <input id="user" type="text" />
+          </div>
+          <div style="margin-bottom:12px">
+            <label for="pass">Password</label>
+            <input id="pass" type="password" />
+          </div>
+        </div>
+
+        <div style="margin-top:14px" class="card small">
+          <strong>Quick features</strong>
+          <ul style="margin-top:8px;line-height:1.6;color:var(--muted)">
+            <li>Responsive single-file UI (HTML/CSS/JS)</li>
+            <li>Login tracking history (localStorage)</li>
+            <li>Simulated upload & download for .accdb files</li>
+            <li>Modern dashboard cards & animations</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="app" class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">AD</div>
+        <div>
+          <div class="title">Abdirizaak Databases</div>
+          <div class="muted">Shop • Microsoft Access templates</div>
+        </div>
+      </div>
+
+      <nav>
+        <div class="navlink" data-view="dashboard">Dashboard</div>
+        <div class="navlink" data-view="shop">Shop</div>
+        <div class="navlink" data-view="upload">Upload</div>
+        <div class="navlink" data-view="history">Login History</div>
+        <div class="navlink" data-view="account">Account</div>
+      </nav>
+    </header>
+
+    <div class="grid">
+      <aside class="sidebar">
+        <div class="user card">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="avatar">A</div>
+            <div>
+              <div id="uName" style="font-weight:700">Guest</div>
+              <div class="muted small" id="uEmail">demo@abdirizaak.example</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card small" style="margin-top:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>Quick actions</div>
+            <div class="pill" id="onlineStatus">Online</div>
+          </div>
+          <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+            <button class="btn" id="goShop">Go to Shop</button>
+            <button class="btn secondary" id="goUpload">Upload DB</button>
+            <button class="btn secondary" id="viewHistory">View History</button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div style="font-weight:700">Stats</div>
+            <div class="muted small">real-time</div>
+          </div>
+          <div class="muted small">Files in store: <strong id="totalFiles">0</strong></div>
+          <div class="muted small">Downloads total: <strong id="totalDownloads">0</strong></div>
+        </div>
+      </aside>
+
+      <main>
+        <div id="view-dashboard" class="view">
+          <div class="contentHeader">
+            <div>
+              <h2 style="margin:0">Dashboard</h2>
+              <div class="muted small">Overview & quick actions</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <div class="pill">Signed in as <strong id="topUser">Guest</strong></div>
+              <div class="muted small">Local demo</div>
+            </div>
+          </div>
+
+          <div class="kpi" style="margin-bottom:12px">
+            <div class="card k animate-pop">
+              <div style="font-size:12px;color:var(--muted)">Files available</div>
+              <div style="font-weight:700;font-size:20px" id="kFiles">0</div>
+            </div>
+            <div class="card k animate-pop">
+              <div style="font-size:12px;color:var(--muted)">Downloads</div>
+              <div style="font-weight:700;font-size:20px" id="kDownloads">0</div>
+            </div>
+            <div class="card k animate-pop">
+              <div style="font-size:12px;color:var(--muted)">Users</div>
+              <div style="font-weight:700;font-size:20px" id="kUsers">1</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 style="margin-top:0">Latest files</h3>
+            <div id="filesList" style="margin-top:10px"></div>
+          </div>
+        </div>
+
+        <div id="view-shop" class="view" style="display:none">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <div>
+              <h2 style="margin:0">Shop</h2>
+              <div class="muted small">Choose a template and download</div>
+            </div>
+            <div>
+              <input id="search" placeholder="Search templates..." style="padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#fff" />
+            </div>
+          </div>
+
+          <div class="list" id="shopGrid"></div>
+        </div>
+
+        <div id="view-upload" class="view" style="display:none">
+          <h2>Upload database</h2>
+          <div class="muted small">Upload your .accdb file to add it to the demo store (client-side only)</div>
+          <div style="margin-top:12px" class="card">
+            <input id="fileInput" type="file" accept=".accdb,.mdb" />
+            <div style="margin-top:10px;display:flex;gap:8px">
+              <input id="fileTitle" placeholder="Template title" style="padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#fff;flex:1" />
+              <button class="btn" id="uploadBtn">Upload</button>
+            </div>
+            <div style="margin-top:10px" class="muted small">Uploaded files are saved to your browser (localStorage). Admin can delete/upload; users can only download.</div>
+          </div>
+        </div>
+
+        <div id="view-history" class="view" style="display:none">
+          <h2>Login history</h2>
+          <div class="muted small">Records of sign-ins (client-side timestamps)</div>
+          <div style="margin-top:12px" id="historyList"></div>
+        </div>
+
+        <div id="view-account" class="view" style="display:none">
+          <h2>Account</h2>
+          <div class="card">
+            <div style="display:flex;gap:12px;align-items:center">
+              <div class="avatar">A</div>
+              <div>
+                <div id="accName" style="font-weight:700">Guest</div>
+                <div class="muted small" id="accEmail">demo@abdirizaak.example</div>
+              </div>
+            </div>
+            <div style="margin-top:12px;display:flex;gap:8px">
+              <button class="btn" id="logoutBtn">Logout</button>
+              <button class="btn secondary" id="clearStorage">Clear demo data</button>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+
+    <footer style="margin-top:18px;text-align:center;color:var(--muted);font-size:13px">© <span id="year"></span> Abdirizaak Databases — Demo front-end only</footer>
+  </div>
+
+  <script>
+    const USERS = [
+      {username:"admin", password:"1234", role:"admin"},
+      {username:"user", password:"1234", role:"user"}
+    ];
+
+    const $ = s=>document.querySelector(s);
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    document.getElementById('loginBtn').addEventListener('click',()=>{attemptLogin();});
+
+    function attemptLogin(){
+      const u = $('#user').value.trim();
+      const p = $('#pass').value.trim();
+      const found = USERS.find(x=>x.username===u && x.password===p);
+      if(!found){alert('Invalid credentials'); return;}
+      localStorage.setItem('ab_user', u);
+      localStorage.setItem('ab_role', found.role);
+      $('#welcomeScreen').style.display='none';
+      $('#app').style.display='block';
+      renderAll();
+      showView('dashboard');
+    }
+
+    function logout(){
+      localStorage.removeItem('ab_user');
+      localStorage.removeItem('ab_role');
+      location.reload();
+    }
+    $('#logoutBtn').addEventListener('click',logout);
+    $('#clearStorage').addEventListener('click',()=>{
+      if(confirm('Clear demo data from this browser?')){localStorage.removeItem('ab_files');localStorage.removeItem('ab_history');location.reload();}
+    });
+
+    function showView(name){
+      document.querySelectorAll('.view').forEach(v=>v.style.display='none');
+      $('#view-'+name).style.display='block';
+      document.querySelectorAll('.navlink').forEach(n=>n.style.opacity = n.dataset.view===name?1:0.8);
+    }
+
+    document.querySelectorAll('.navlink').forEach(n=>n.addEventListener('click',()=>showView(n.dataset.view)));
+    $('#goShop').addEventListener('click',()=>showView('shop'));
+    $('#goUpload').addEventListener('click',()=>showView('upload'));
+    $('#viewHistory').addEventListener('click',()=>showView('history'));
+
+    function pushHistory(){
+      const u = localStorage.getItem('ab_user')||'Guest';
+      const h = JSON.parse(localStorage.getItem('ab_history')||'[]');
+      h.unshift({user:u,when:new Date().toISOString()});
+      localStorage.setItem('ab_history', JSON.stringify(h.slice(0,200)));
+    }
+
+    function renderHistory(){
+      const h = JSON.parse(localStorage.getItem('ab_history')||'[]');
+      $('#historyList').innerHTML = h.map(it=>`<div class="card" style="margin-bottom:8px">${it.user} — <span class="muted small">${new Date(it.when).toLocaleString()}</span></div>`).join('') || '<div class="muted small">No history yet.</div>';
+    }
+
+    function loadFiles(){return JSON.parse(localStorage.getItem('ab_files')||'[]');}
+    function saveFiles(arr){localStorage.setItem('ab_files',JSON.stringify(arr));}
+
+    function renderFiles(){
+      const role = localStorage.getItem('ab_role')||'user';
+      const files = loadFiles();
+      $('#filesList').innerHTML = files.slice(0,6).map(f=>`<div class="fileItem"><div><strong>${f.title}</strong><div class="muted small">${f.name} • ${new Date(f.uploaded).toLocaleString()}</div></div><div style="display:flex;gap:8px">${role==='admin'?`<button class="btn" onclick="downloadFile('${f.id}')">Download</button><button class="btn secondary" onclick="removeFile('${f.id}')">Remove</button>`:`<button class="btn" onclick="downloadFile('${f.id}')">Download</button>`}</div></div>`).join('') || '<div class="muted small">No files yet.</div>';
+
+      const grid = $('#shopGrid');
+      grid.innerHTML = files.map(f=>`<div class="card animate-pop" style="padding:12px"><div style="display:flex;justify-content:space-between;align-items:start"><div><div style="font-weight:700">${f.title}</div><div class="muted small">${f.name} • ${new Date(f.uploaded).toLocaleDateString()}</div><div style="margin-top:8px;color:var(--muted);font-size:13px">${f.desc||'MS Access template'}</div></div><div style="display:flex;flex-direction:column;gap:8px">${role==='admin'?`<button class="btn" onclick="downloadFile('${f.id}')">Download</button><button class="btn secondary" onclick="removeFile('${f.id}')">Remove</button>`:`<button class="btn" onclick="downloadFile('${f.id}')">Download</button>`}<div class="muted small">Price: Free (demo)</div></div></div></div>`).join('') || '<div class="muted small">No templates available.</div>';
+
+      $('#totalFiles').textContent = files.length;
+      $('#kFiles').textContent = files.length;
+    }
+
+    $('#uploadBtn').addEventListener('click',()=>{
+      const role = localStorage.getItem('ab_role')||'user';
+      if(role!=='admin'){alert('Only admin can upload files'); return;}
+      const fi = $('#fileInput');
+      const title = $('#fileTitle').value.trim() || (fi.files[0]?fi.files[0].name:'Untitled');
+      if(!fi.files.length){alert('Select a .accdb or .mdb file');return;}
+      const file = fi.files[0];
+      const reader = new FileReader();
+      reader.onload=e=>{
+        const arr=loadFiles();
+        const id='f_'+Date.now();
+        const base64=e.target.result.split(',')[1]||'';
+        arr.unshift({id,name:file.name,title,uploaded:new Date().toISOString(),size:file.size,data:base64});
+        saveFiles(arr);renderFiles();
+        alert('File uploaded');
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function removeFile(id){
+      const role = localStorage.getItem('ab_role')||'user';
+      if(role!=='admin'){alert('Only admin can remove files');return;}
+      let arr = loadFiles();
+      arr = arr.filter(f=>f.id!==id);
+      saveFiles(arr);renderFiles();
+    }
+
+    function downloadFile(id){
+      const arr = loadFiles();
+      const f = arr.find(x=>x.id===id);
+      if(!f){alert('File not found'); return;}
+      const cnt = Number(localStorage.getItem('ab_downloads')||0)+1; localStorage.setItem('ab_downloads',cnt);
+      $('#totalDownloads').textContent=cnt; $('#kDownloads').textContent=cnt;
+      const byteString = atob(f.data);
+      const ab = new ArrayBuffer(byteString.length);
+      const ia = new Uint8Array(ab);
+      for(let i=0;i<byteString.length;i++)ia[i]=byteString.charCodeAt(i);
+      const blob=new Blob([ab],{type:'application/octet-stream'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a'); a.href=url; a.download=f.name; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    }
+    window.downloadFile=downloadFile; window.removeFile=removeFile;
+
+    function renderAll(){
+      setTimeout(()=>{
+        renderFiles();renderHistory();
+        $('#kUsers').textContent=1;
+        $('#totalDownloads').textContent=localStorage.getItem('ab_downloads')||0;
+        $('#kDownloads').textContent=localStorage.getItem('ab_downloads')||0;
+        const u = localStorage.getItem('ab_user')||'Guest';
+        $('#uName').textContent=u; $('#topUser').textContent=u; $('#accName').textContent=u;
+        $('#uEmail').textContent=u+'@abdirizaak.local'; $('#accEmail').textContent=u+'@abdirizaak.local';
+        pushHistory();
+      },100);
+    }
+
+    window.addEventListener('load',()=>{
+      const u = localStorage.getItem('ab_user');
+      if(u){$('#welcomeScreen').style.display='none';$('#app').style.display='block';renderAll();}
+    });
+
+    $('#search').addEventListener('input',e=>{
+      const q=e.target.value.toLowerCase();
+      const files=loadFiles().filter(f=>f.title.toLowerCase().includes(q)||f.name.toLowerCase().includes(q));
+      const role = localStorage.getItem('ab_role')||'user';
+      $('#shopGrid').innerHTML=files.map(f=>`<div class="card animate-pop" style="padding:12px"><div style="display:flex;justify-content:space-between;align-items:start"><div><div style="font-weight:700">${f.title}</div><div class="muted small">${f.name} • ${new Date(f.uploaded).toLocaleDateString()}</div></div><div style="display:flex;flex-direction:column;gap:8px">${role==='admin'?`<button class="btn" onclick="downloadFile('${f.id}')">Download</button><button class="btn secondary" onclick="removeFile('${f.id}')">Remove</button>`:`<button class="btn" onclick="downloadFile('${f.id}')">Download</button>`}<div class="muted small">Price: Free (demo)</div></div></div></div>`).join('')||'<div class="muted small">No templates found.</div>';
+    });
+
+    (function seed(){
+      const files = loadFiles();
+      if(files.length===0){
+        const sample = [
+          {id:'f1',name:'Inventory.accdb',title:'Inventory Management',uploaded:new Date().toISOString(),desc:'Manage products, sales, and stock',data:''},
+          {id:'f2',name:'HR.accdb',title:'HR Templates',uploaded:new Date().toISOString(),desc:'Employee records and payroll',data:''}
+        ];
+        saveFiles(sample);
+      }
+    })();
+
+  </script>
+</body>
+</html>
